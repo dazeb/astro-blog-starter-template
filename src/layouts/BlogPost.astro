@@ -11,75 +11,199 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+  <head>
+    <BaseHead title={`${title} — dazeb's Blog`} description={description} />
+    <style>
+      main {
+        width: calc(100% - 2em);
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+      .hero-image {
+        width: 100%;
+        max-height: 420px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .hero-image::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: linear-gradient(transparent, rgb(var(--bg)));
+      }
+
+      .hero-image img {
+        display: block;
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        border-radius: 0;
+      }
+
+      .prose {
+        width: 720px;
+        max-width: calc(100% - 3em);
+        margin: 0 auto;
+        padding: 2em 0 4em;
+      }
+
+      .article-header {
+        margin-bottom: 2.5em;
+        text-align: center;
+      }
+
+      .article-header h1 {
+        font-size: 2.25em;
+        margin: 0 0 0.5em;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+      }
+
+      .article-meta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1em;
+        color: rgb(var(--gray));
+        font-size: 0.9em;
+      }
+
+      .article-meta .date {
+        margin: 0;
+      }
+
+      .article-meta .dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: rgb(var(--gray));
+        opacity: 0.5;
+      }
+
+      .last-updated-on {
+        font-style: italic;
+        font-size: 0.85em;
+        color: rgb(var(--gray));
+        opacity: 0.7;
+        margin-top: 0.35em;
+      }
+
+      .prose-content {
+        font-size: 1.05em;
+        line-height: 1.8;
+      }
+
+      .prose-content p {
+        margin-bottom: 1.5em;
+      }
+
+      .prose-content h2 {
+        margin-top: 2em;
+        margin-bottom: 0.6em;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid rgb(var(--border));
+      }
+
+      .prose-content h3 {
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+      }
+
+      .prose-content img {
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        margin: 1.5em 0;
+      }
+
+      .prose-content blockquote {
+        margin: 1.5em 0;
+      }
+
+      .prose-content code {
+        font-size: 0.85em;
+      }
+
+      .prose-content pre {
+        margin: 1.5em 0;
+      }
+
+      .prose-content hr {
+        margin: 2.5em 0;
+      }
+
+      .prose-content ul,
+      .prose-content ol {
+        margin-bottom: 1.5em;
+      }
+
+      .prose-content li {
+        margin-bottom: 0.35em;
+      }
+
+      @media (max-width: 720px) {
+        .hero-image img {
+          height: 240px;
+        }
+
+        .hero-image::after {
+          height: 60px;
+        }
+
+        .article-header h1 {
+          font-size: 1.5em;
+        }
+
+        .prose {
+          max-width: calc(100% - 2em);
+          padding: 1.5em 0 3em;
+        }
+
+        .prose-content {
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+      <article>
+        {heroImage && (
+          <div class="hero-image">
+            <img width={1200} height={600} src={heroImage} alt="" />
+          </div>
+        )}
+        <div class="prose">
+          <header class="article-header">
+            <h1>{title}</h1>
+            <div class="article-meta">
+              <time class="date" datetime={pubDate.toISOString()}>
+                <FormattedDate date={pubDate} />
+              </time>
+              <span class="dot"></span>
+              <span>{Math.ceil((description?.length || 200) / 1000) + 3} min read</span>
+            </div>
+            {
+              updatedDate && (
+                <div class="last-updated-on">
+                  Last updated <FormattedDate date={updatedDate} />
+                </div>
+              )
+            }
+          </header>
+          <div class="prose-content">
+            <slot />
+          </div>
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>
